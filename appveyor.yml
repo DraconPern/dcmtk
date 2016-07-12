@@ -32,12 +32,12 @@ build_script:
 
 after_build:
   - cd %DEVSPACE%
-  - 7z a dcmtk.7z dcmtk zlib\%TYPE% -xr0!*.log -xr0!*.c -xr0!*.cpp -xr0!*.cc -xr0!*.obj
-  - mv dcmtk.7z %APPVEYOR_BUILD_FOLDER%
+  - 7z a dcmtk-win.7z dcmtk zlib\%TYPE% -xr0!*.log -xr0!*.c -xr0!*.cpp -xr0!*.cc -xr0!*.obj
+  - mv dcmtk-win.7z %APPVEYOR_BUILD_FOLDER%
 
 artifacts:
-  - path: dcmtk.7z
-    name: dcmtk
+  - path: dcmtk-win.7z
+    name: dcmtk-win
  
 deploy:
   provider: S3
@@ -48,4 +48,4 @@ deploy:
   bucket: draconpern-buildcache
   set_public: true
   folder: 
-  artifact: dcmtk  
+  artifact: dcmtk-win
