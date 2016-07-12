@@ -1,0 +1,51 @@
+platform:
+  - x86
+
+configuration:
+  - Release
+
+install:
+  - SET TYPE=%CONFIGURATION%
+  - SET DEVSPACE=%APPVEYOR_BUILD_FOLDER%\..
+  
+# because packages aren't relocatable, we need dependencies to be built in the parent of %APPVEYOR_BUILD_FOLDER%
+#dcmtk
+  - cd %DEVSPACE%
+  - git clone --depth 1 git://git.dcmtk.org/dcmtk.git 
+
+#zlib
+  - cd %DEVSPACE%
+  - git clone https://github.com/madler/zlib.git
+  - cd zlib && mkdir build-%TYPE% && cd build-%TYPE%
+  - cmake.exe .. -G "Visual Studio 11" -DCMAKE_C_FLAGS_RELEASE="/MT /O2 /D NDEBUG" -DCMAKE_C_FLAGS_DEBUG="/D_DEBUG /MTd /Od" -DCMAKE_INSTALL_PREFIX=%DEVSPACE%\zlib\%TYPE%
+  - msbuild /P:Configuration=%TYPE% INSTALL.vcxproj
+  - IF "%TYPE%" == "Release" copy /Y %DEVSPACE%\zlib\Release\lib\zlibstatic.lib %DEVSPACE%\zlib\Release\lib\zlib_o.lib
+  - IF "%TYPE%" == "Debug"   copy /Y %DEVSPACE%\zlib\Debug\lib\zlibstaticd.lib %DEVSPACE%\zlib\Debug\lib\zlib_d.lib
+
+before_build:
+  - cd %APPVEYOR_BUILD_FOLDER% && mkdir build-%TYPE% && cd build-%TYPE%
+  - cmake .. -G "Visual Studio 11" -DDCMTK_WIDE_CHAR_FILE_IO_FUNCTIONS=1 -DDCMTK_WITH_TIFF=OFF -DDCMTK_WITH_PNG=OFF -DDCMTK_WITH_OPENSSL=OFF -DDCMTK_WITH_XML=OFF -DDCMTK_WITH_ZLIB=ON -DWITH_ZLIBINC=%DEVSPACE%\zlib\%TYPE% -DDCMTK_WITH_SNDFILE=OFF -DDCMTK_WITH_ICONV=OFF -DDCMTK_WITH_WRAP=OFF -DCMAKE_INSTALL_PREFIX=%APPVEYOR_BUILD_FOLDER%\%TYPE%
+
+build_script:
+  - cd %APPVEYOR_BUILD_FOLDER%\build-%TYPE%
+  - msbuild /maxcpucount:2 /P:Configuration=%TYPE% INSTALL.vcxproj /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
+
+after_build:
+  - cd %DEVSPACE%
+  - 7z a dcmtk.7z dcmtk zlib\%TYPE% -xr0!*.log -xr0!*.c -xr0!*.cpp -xr0!*.cc -xr0!*.obj
+  - mv dcmtk.7z %APPVEYOR_BUILD_FOLDER%
+
+artifacts:
+  - path: dcmtk.7z
+    name: dcmtk
+ 
+deploy:
+  provider: S3
+  access_key_id:
+    secure: ocfx3RWVSyFaLRBBJXRLrvwqFGoftzrWzqUWrx20/bc=
+  secret_access_key:
+    secure: cVrRAHZDL4OZaPmgpH2RAa6yKD1ckjrMvtL/RozVMTTxiMWe5+3BKGrWv7RzNQLK
+  bucket: draconpern-buildcache
+  set_public: true
+  folder: 
+  artifact: dcmtk  
