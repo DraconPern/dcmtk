@@ -11,7 +11,7 @@ install:
 # because packages aren't relocatable, we need dependencies to be built in the parent of %APPVEYOR_BUILD_FOLDER%
 #dcmtk
   - cd %DEVSPACE%
-  - git clone --depth 1 git://git.dcmtk.org/dcmtk.git 
+  - git clone --depth 1 git://git.dcmtk.org/dcmtk.git dcmtksrc
 
 #zlib
   - cd %DEVSPACE%
@@ -23,7 +23,7 @@ install:
   - IF "%TYPE%" == "Debug"   copy /Y %DEVSPACE%\zlib\Debug\lib\zlibstaticd.lib %DEVSPACE%\zlib\Debug\lib\zlib_d.lib
 
 before_build:
-  - cd %APPVEYOR_BUILD_FOLDER% && mkdir build-%TYPE% && cd build-%TYPE%
+  - cd %DEVSPACE%\dcmtksrc && mkdir build-%TYPE% && cd build-%TYPE%
   - cmake .. -G "Visual Studio 11" -DDCMTK_WIDE_CHAR_FILE_IO_FUNCTIONS=1 -DDCMTK_WITH_TIFF=OFF -DDCMTK_WITH_PNG=OFF -DDCMTK_WITH_OPENSSL=OFF -DDCMTK_WITH_XML=OFF -DDCMTK_WITH_ZLIB=ON -DWITH_ZLIBINC=%DEVSPACE%\zlib\%TYPE% -DDCMTK_WITH_SNDFILE=OFF -DDCMTK_WITH_ICONV=OFF -DDCMTK_WITH_WRAP=OFF -DCMAKE_INSTALL_PREFIX=%APPVEYOR_BUILD_FOLDER%\%TYPE%
 
 build_script:
