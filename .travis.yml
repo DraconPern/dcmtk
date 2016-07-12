@@ -30,6 +30,4 @@ deploy:
   bucket: draconpern-buildcache
   acl: public_read
   skip_cleanup: true
-  local_dir: dpl_cd_upload
-  on:
-    branch: ci
+  local_dir: dpl_cd_upload  
