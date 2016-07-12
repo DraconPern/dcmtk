@@ -27,7 +27,7 @@ before_build:
 
 build_script:
   - cd %DEVSPACE%\dcmtksrc\build-%TYPE%
-  - msbuild /maxcpucount:2 /P:Configuration=%TYPE% INSTALL.vcxproj /logger:"C:\Program Files\AppVeyor\BuildAgent\Appveyor.MSBuildLogger.dll"
+  - msbuild /maxcpucount:2 /P:Configuration=%TYPE% INSTALL.vcxproj
 
 after_build:
   - cd %DEVSPACE%
