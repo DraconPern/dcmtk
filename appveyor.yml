@@ -1,5 +1,7 @@
 image: Visual Studio 2013
 
+skip_tags: true
+
 configuration:
   - Release
 
