@@ -39,14 +39,13 @@ after_build:
 artifacts:
   - path: dcmtk-win.7z
     name: dcmtk-win
- 
+
 deploy:
-  provider: S3
-  access_key_id:
-    secure: ocfx3RWVSyFaLRBBJXRLrvwqFGoftzrWzqUWrx20/bc=
-  secret_access_key:
-    secure: cVrRAHZDL4OZaPmgpH2RAa6yKD1ckjrMvtL/RozVMTTxiMWe5+3BKGrWv7RzNQLK
-  bucket: draconpern-buildcache
-  set_public: true
-  folder: 
+  release: v$(appveyor_build_version)
+  description: 'Release'
+  provider: GitHub
+  auth_token:
+    secure: q5nOWOsmJMky9hZxx640OWHn1oMUN24yYffn+kCNKGo888LMi9h5O03nH51RD/bV
   artifact: dcmtk-win
+  draft: false
+  prerelease: false  
