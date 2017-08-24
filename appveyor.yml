@@ -12,7 +12,7 @@ install:
 # because packages aren't relocatable, we need dependencies to be built in the parent of %APPVEYOR_BUILD_FOLDER%
 #dcmtk
   - cd %DEVSPACE%
-  - git clone --depth 1 git://git.dcmtk.org/dcmtk.git dcmtksrc
+  - git clone --depth 1 -b DCMTK-3.6.2 -- git://git.dcmtk.org/dcmtk.git dcmtksrc
 
 #zlib
   - cd %DEVSPACE%
