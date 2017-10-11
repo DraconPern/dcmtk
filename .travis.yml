@@ -13,7 +13,7 @@ env:
   - TYPE=Release DEVSPACE=$TRAVIS_BUILD_DIR/..
 
 script:
-  - git clone --depth 1 git://git.dcmtk.org/dcmtk.git dcmtksrc
+  - git clone --depth 1 -b DCMTK-3.6.2 -- git://git.dcmtk.org/dcmtk.git dcmtksrc
   - cd dcmtksrc && mkdir -p build-$TYPE && cd build-$TYPE
   - cmake .. -DDCMTK_WITH_TIFF=OFF -DDCMTK_WITH_PNG=OFF -DDCMTK_WITH_OPENSSL=OFF -DDCMTK_WITH_XML=OFF -DDCMTK_WITH_ZLIB=ON -DDCMTK_WITH_SNDFILE=OFF -DDCMTK_WITH_ICONV=OFF -DDCMTK_WITH_WRAP=OFF -DCMAKE_INSTALL_PREFIX=$DEVSPACE/dcmtk/$TYPE
   - make -j8 install
